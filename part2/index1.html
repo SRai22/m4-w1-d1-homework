@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.js"></script>
+    <title>Password Validator</title>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-6 my-5">
+                    <div class="form-group mb-3">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" placeholder="Password" v-model="password">
+                        <small id="passwordHelp" class="form-text text-muted">Password should contain
+                        <span :class="{ 'has-required': hasMinimumLength }">at least 8 characters</span>,
+                        <span :class="{ 'has-required': hasLowercase }">one lowercase letter</span>,
+                        <span :class="{ 'has-required': hasUppercase }">one uppercase letter</span>,
+                        <span :class="{ 'has-required': hasNumber }">one number</span>, and
+                        <span :class="{ 'has-required': hasSpecial }">one special character.</span></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, watch } = Vue;
+
+        createApp({
+            setup() {
+                const password = ref('');
+                const hasMinimumLength = ref(false);
+                const hasNumber = ref(false);
+                const hasLowercase = ref(false);
+                const hasUppercase = ref(false);
+                const hasSpecial = ref(false);
+
+                watch(password, (newValue) => {
+                    hasMinimumLength.value = (newValue.length >= 8);
+                    hasLowercase.value = /[a-z]/.test(newValue);
+                    hasUppercase.value = /[A-Z]/.test(newValue);
+                    hasNumber.value = /\d/.test(newValue);
+                    hasSpecial.value = /[!@#$%^&*()+=._-]/.test(newValue);
+                });
+
+                return {
+                    password,
+                    hasMinimumLength,
+                    hasNumber,
+                    hasLowercase,
+                    hasUppercase,
+                    hasSpecial
+                };
+            }
+        }).mount('#app');
+    </script>
+
+    <style>
+        .has-required {
+            text-decoration: line-through;
+            color: #689868;
+        }
+    </style>
+</body>
+</html>
